@@ -1,0 +1,18 @@
+set a 5
+set b 10
+
+#Addition
+set sum [expr $a+$b]
+puts "Sum: $sum"
+
+#Subtraction
+set diff [expr $a-$b]
+puts "Difference: $diff"
+
+#Multiplication
+set prod [expr $a*$b]
+puts "Product: $prod"
+
+#Division
+set quot [expr $a/$b]
+puts "Quotient: $quot"

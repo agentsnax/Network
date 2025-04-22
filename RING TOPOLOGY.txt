@@ -1,0 +1,71 @@
+RING TOPOLOGY CODE: Save this script as ring.tcl
+
+
+
+# Ring Topology Simulation
+# Initialize the simulator
+set ns [new Simulator]
+
+
+# Create trace and NAM files
+set nf [open ring.nam w]
+set tf [open ring.tr w]
+$ns namtrace-all $nf
+$ns trace-all $tf
+
+
+# Create nodes
+set n1 [$ns node]
+set n2 [$ns node]
+set n3 [$ns node]
+set n4 [$ns node]
+
+
+# Create links (Ring Structure)
+$ns duplex-link $n1 $n2 1Mb 10ms DropTail
+$ns duplex-link $n2 $n3 1Mb 10ms DropTail
+$ns duplex-link $n3 $n4 1Mb 10ms DropTail
+$ns duplex-link $n4 $n1 1Mb 10ms DropTail  ;# Ring connection
+
+
+# Add TCP traffic
+set tcp [new Agent/TCP]
+set sink_tcp [new Agent/TCPSink]
+$ns attach-agent $n1 $tcp
+$ns attach-agent $n2 $sink_tcp
+$ns connect $tcp $sink_tcp
+set ftp [new Application/FTP]
+$ftp attach-agent $tcp
+
+
+# Add UDP traffic
+set udp [new Agent/UDP]
+set sink_udp [new Agent/Null]
+$ns attach-agent $n3 $udp
+$ns attach-agent $n4 $sink_udp
+$ns connect $udp $sink_udp
+set cbr [new Application/Traffic/CBR]
+$cbr set packetSize_ 500
+$cbr set interval_ 0.02
+$cbr attach-agent $udp
+
+
+# Start simulation
+$ns at 0.5 "$ftp start"
+$ns at 1.0 "$cbr start"
+$ns at 4.0 "$ftp stop"
+$ns at 4.5 "$cbr stop"
+
+
+# Finish simulation
+$ns at 5.0 "finish"
+proc finish {} {
+    global ns nf tf
+    close $nf
+    close $tf
+    exec nam ring.nam &
+    exit 0
+}
+$ns run
+
+

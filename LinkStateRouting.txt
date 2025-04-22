@@ -1,0 +1,56 @@
+# Create a simulator object
+set ns [new Simulator]
+
+# Enable tracing
+set tracefile [open out.tr w]
+$ns trace-all $tracefile
+set namfile [open out.nam w]
+$ns namtrace-all $namfile
+
+# Define network topology
+set n0 [$ns node]
+set n1 [$ns node]
+set n2 [$ns node]
+set n3 [$ns node]
+set n4 [$ns node]
+
+# Create links between nodes with bandwidth and delay
+$ns duplex-link $n0 $n1 1Mb 10ms DropTail
+$ns duplex-link $n1 $n2 1Mb 10ms DropTail
+$ns duplex-link $n2 $n3 1Mb 10ms DropTail
+$ns duplex-link $n3 $n4 1Mb 10ms DropTail
+$ns duplex-link $n0 $n4 1Mb 20ms DropTail
+
+# Set up routing protocol
+$ns rtproto LS
+
+# Create UDP agent and CBR traffic
+set udp [new Agent/UDP]
+$ns attach-agent $n0 $udp
+set cbr [new Application/Traffic/CBR]
+$cbr attach-agent $udp
+$cbr set packetSize_ 500
+$cbr set rate_ 1Mb
+
+# Create a sink agent
+set null [new Agent/Null]
+$ns attach-agent $n4 $null
+$ns connect $udp $null
+
+# Start and stop traffic
+$ns at 1.0 "$cbr start"
+$ns at 5.0 "$cbr stop"
+
+# Run simulation
+$ns at 6.0 "finish"
+proc finish {} {
+    global ns tracefile namfile
+    $ns flush-trace
+    close $tracefile
+    close $namfile
+    exec nam out.nam &
+    exit 0
+}
+
+$ns run
+

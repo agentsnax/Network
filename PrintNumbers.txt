@@ -1,0 +1,5 @@
+set count 1
+whike {$count<=10}{
+	puts "Counter: $count"
+	incr count
+	}

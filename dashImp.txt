@@ -1,0 +1,47 @@
+self.lbl_employee=Label(self.root,text=f"Total Employee\n{int(self.get_employee_count())}",bd=5,relief=RIDGE,bg="#33bbf9",fg="white",font=("goudy old style",20,"bold"))
+        self.lbl_employee.place(x=300,y=120,height=150,width=300)
+
+        self.lbl_supplier=Label(self.root,text=f"Total Supplier\n{int(self.get_supplier_count())}",bd=5,relief=RIDGE,bg="#ff5722",fg="white",font=("goudy old style",20,"bold"))
+        self.lbl_supplier.place(x=650,y=120,height=150,width=300)
+
+        self.lbl_category=Label(self.root,text=f"Total Category\n{int(self.get_category_count())}",bd=5,relief=RIDGE,bg="#009688",fg="white",font=("goudy old style",20,"bold"))
+        self.lbl_category.place(x=1000,y=120,height=150,width=300)
+
+        self.lbl_product=Label(self.root,text=f"Total Product\n{int(self.get_product_count())}",bd=5,relief=RIDGE,bg="#607d8b",fg="white",font=("goudy old style",20,"bold"))
+        self.lbl_product.place(x=300,y=300,height=150,width=300)
+
+        self.lbl_sales=Label(self.root,text=f"Total Sales\n",bd=5,relief=RIDGE,bg="#ffc107",fg="white",font=("goudy old style",20,"bold"))
+        self.lbl_sales.place(x=650,y=300,height=150,width=300)
+
+
+def get_employee_count(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        cur.execute("SELECT COUNT(*) FROM employee")
+        count = cur.fetchone()[0]
+        con.close()
+        return count
+    
+    def get_supplier_count(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        cur.execute("SELECT COUNT(*) FROM supplier")
+        count = cur.fetchone()[0]
+        con.close()
+        return count
+    
+    def get_category_count(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        cur.execute("SELECT COUNT(*) FROM category")
+        count = cur.fetchone()[0]
+        con.close()
+        return count
+    
+    def get_product_count(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        cur.execute("SELECT COUNT(*) FROM product")
+        count = cur.fetchone()[0]
+        con.close()
+        return count
